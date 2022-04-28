@@ -1,0 +1,104 @@
+#----------------------------------------------------------------------
+#----------------------------------------------------------------------
+#------------------ Makefile Nucleo  ---------------------
+#----------------------------------------------------------------------
+#----------------------------------------------------------------------
+
+#name of the target
+PROJECT = base
+
+#----------------------------------------------------------------------
+# TOOL DEFINITIONS
+#----------------------------------------------------------------------
+PREFIX=arm-none-eabi-
+AS      = $(PREFIX)as
+CC      = $(PREFIX)gcc
+CPP     = $(PREFIX)g++
+LD      = $(PREFIX)gcc
+OBJCOPY = $(PREFIX)objcopy
+OBJDUMP = $(PREFIX)objdump
+SIZE 	= $(PREFIX)size
+
+#----------------------------------------------------------------------
+# sources files
+#----------------------------------------------------------------------
+# main file
+CSRCS = Src/main.c
+
+# add asm files to build
+ASRCS = Startup/startup_stm32f401xe.s 
+ASRCS += Src/int2float.s
+
+# Include and library
+#----------------------------------------------------------------------
+INCLUDE_PATHS = -I. -I./Inc 
+
+#----------------------------------------------------------------------
+#link script/..
+#----------------------------------------------------------------------
+LINKER_SCRIPT = ./STM32F401RETX_FLASH.ld
+
+#----------------------------------------------------------------------
+# COMPILER AND ASSEMBLER OPTIONS
+#----------------------------------------------------------------------
+#compiler options
+CPU = -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -specs=nano.specs
+CC_FLAGS  = $(CPU) -c
+AS_FLAGS = -mcpu=cortex-m4 -mthumb 
+
+#linker options and library
+LD_FLAGS = $(CPU)  -Wl,-Map=$(PROJECT).map,--cref -Wl,--gc-sections
+LD_SYS_LIBS = -lm -lc -lgcc -lnosys 
+LD_SYS_LIBS += -lstdc++ -lsupc++ 
+
+#debug
+  CC_FLAGS +=  -O0 -g3
+  AS_FLAGS += -gdwarf-2
+
+#----------------------------------------------------------------------
+# BUILD OBJECTS
+#----------------------------------------------------------------------
+
+# list all object files
+OBJECTS = $(CSRCS:.c=.o) $(ASRCS:.s=.o) $(CPPSRCS:.cpp=.o) 
+OBJECTS_LIB = $(CSRCS_LIB:.c=.o) 
+
+#compile all object file
+%.o:%.c 
+	$(CC) $(CC_FLAGS) $(CC_SYMBOLS) $(INCLUDE_PATHS) -o $@ $<
+%.o:%.s
+	$(AS) $(AS_FLAGS) -o $@ $<
+.cpp.o:
+	$(CPP) $(CC_FLAGS) $(CC_SYMBOLS) -std=gnu++98  $(INCLUDE_PATHS) -o $@ $< 
+
+#----------------------------------------------------------------------
+# BUILD PROJECT (link)
+#----------------------------------------------------------------------
+
+$(PROJECT).elf: $(OBJECTS) $(OBJECTS_LIB)
+	$(LD) -o $@ $^ $(LD_FLAGS) -T$(LINKER_SCRIPT) $(LD_SYS_LIBS) $(LIBS) $(LIBRARY_PATHS)
+	$(SIZE) $@
+
+$(PROJECT).bin: $(PROJECT).elf
+	@$(OBJCOPY) -O binary $< $@
+
+$(PROJECT).hex: $(PROJECT).elf
+	@$(OBJCOPY) -O ihex $< $@
+
+$(PROJECT).lst: $(PROJECT).elf
+	@$(OBJDUMP) -Sdh $< > $@
+
+lst: $(PROJECT).lst
+
+size:
+	$(SIZE) $(PROJECT).elf
+
+
+all: $(PROJECT).bin $(PROJECT).hex $(PROJECT).lst
+
+clean:
+	rm -f $(PROJECT).bin $(PROJECT).elf $(PROJECT).hex $(PROJECT).map $(PROJECT).lst $(OBJECTS) $(DEPS) $(OBJECTS_LIB)
+
+
+
+

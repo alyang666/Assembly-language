@@ -1,0 +1,7 @@
+01:24:24 **** Incremental Build of configuration Debug for project base ****
+make -j4 all 
+arm-none-eabi-as -mcpu=cortex-m4 -mthumb  -gdwarf-2 -o Src/int2float.o Src/int2float.s
+arm-none-eabi-gcc -o base.elf Src/main.o Startup/startup_stm32f401xe.o Src/int2float.o -mcpu=cortex-m4 -mthumb -mfloat-abi=soft -specs=nano.specs  -Wl,-Map=base.map,--cref -Wl,--gc-sections -T./STM32F401RETX_FLASH.ld -lm -lc -lgcc -lnosys  -lstdc++ -lsupc++   
+arm-none-eabi-size base.elf
+   text	   data	    bss	    dec	    hex	filename
+   1068	      8	   1568	   2644	    a54	base.elf

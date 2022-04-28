@@ -1,0 +1,55 @@
+    .text
+	.syntax unified
+
+	.global int2float
+
+int2float:
+   mov r9, r0
+   bic r0, r0, #0x80000000
+   mov r3, #1
+   mov r1,#0x40000000
+cal_expo:
+   and r2, r1, r0
+   cmp r2, r1
+   mov r1, r1, lsr #1
+   add r3, r3, #1
+   bne cal_expo
+
+mov r1, #16
+sub r1, r1, r3
+mov r5, #127
+
+comparation_avec_7:
+   mov r6, #7
+   cmp r1, #7
+   blt moins
+   bgt grand
+   beq egale
+moins:
+   add r5, r5, r1
+   sub r1, r6, r1
+   mov r0, r0, lsl r1
+   bl resultat
+grand:
+   add r5, r5, r1
+   sub r1, r1, r6
+   mov r0, r0, lsr r1
+   bl resultat
+egale:
+   add r5, r5, r6
+   bl resultat
+resultat:
+   ldr r4, =0x007fffff
+   and r0, r4, r0
+   mov r5, r5, lsl#23
+   add r0, r0, r5
+   mov r7, #0x80000000
+   and r7, r9, r7
+   orr r0, r7, r0
+   b retour_int2float
+retour_int2float:
+   bx lr
+
+
+
+

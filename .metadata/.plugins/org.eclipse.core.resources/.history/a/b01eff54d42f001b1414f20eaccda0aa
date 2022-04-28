@@ -1,0 +1,11 @@
+//#include"Fonction.s"
+extern float int2float(int a);
+//extern float addfloat(float a, float b);
+
+int main()
+{
+   float x,y;
+   x= int2float(5);
+   //y=addfloat(1.25,1.5);
+   return 0;
+}

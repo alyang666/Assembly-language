@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename resource &apos;base/Src/Fonction.s&apos; to &apos;int2float.s&apos;" description="Rename resource &apos;Fonction.s&apos;" flags="7" id="org.eclipse.ltk.core.refactoring.rename.resource" input="Src/Fonction.s" name="int2float.s" stamp="1606392309445" updateReferences="true"/>
+</session>
