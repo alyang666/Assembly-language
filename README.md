@@ -8,8 +8,12 @@ An IEEE 754 format is a "set of representations of numerical values and symbols"
 A floating-point format is specified by
 
 a base (also called radix) b, which is either 2 (binary) or 10 (decimal) in IEEE 754;
+
 a precision p;
+
 an exponent range from emin to emax, with emin = 1 − emax for all IEEE 754 formats;
+
+
 
 
 
@@ -20,8 +24,11 @@ Finite numbers, which can be described by three integers: s = a sign (zero or on
   and q = an exponent such that emin ≤ q + p − 1 ≤ emax. 
   The numerical value of such a finite number is (−1)s × c × bq.[a] Moreover, there are two zero values, 
   called signed zeros: the sign bit specifies whether a zero is +0 (positive zero) or −0 (negative zero);
+  
 Two infinities: +∞ and −∞;
+
 Two kinds of NaN (not-a-number): a quiet NaN (qNaN) and a signaling NaN (sNaN);
+
 
 
 
